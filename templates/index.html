@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Kargo Internal</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            max-width: 550px;
+            width: 100%;
+            padding: 40px;
+            animation: slideUp 0.6s ease-out;
+            margin: auto;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            width: 64px;
+            height: 64px;
+            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 32px;
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.3);
+        }
+
+        h1 {
+            color: #1e293b;
+            margin-bottom: 8px;
+            font-size: 32px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .subtitle {
+            color: #64748b;
+            font-size: 15px;
+            font-weight: 400;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #334155;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        select {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 16px;
+            background: white;
+            color: #1e293b;
+            transition: all 0.3s;
+            cursor: pointer;
+            -webkit-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23334155' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 40px;
+        }
+
+        select:hover {
+            border-color: #cbd5e1;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+            margin-top: 8px;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-primary:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-download {
+            width: 100%;
+            padding: 16px 24px;
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);
+            margin-top: 16px;
+            display: none;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        .btn-download:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-download:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 16px;
+            border-radius: 12px;
+            display: none;
+            animation: fadeIn 0.4s;
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 2px solid #6ee7b7;
+        }
+
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 2px solid #fca5a5;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Mobile optimizations */
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+                align-items: flex-start;
+                padding-top: 20px;
+            }
+
+            .container {
+                border-radius: 20px;
+                padding: 30px 20px;
+                box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.25);
+            }
+
+            .header {
+                margin-bottom: 30px;
+            }
+
+            .logo {
+                width: 56px;
+                height: 56px;
+                font-size: 28px;
+                margin-bottom: 16px;
+            }
+
+            h1 {
+                font-size: 26px;
+            }
+
+            .subtitle {
+                font-size: 14px;
+            }
+
+            .form-group {
+                margin-bottom: 20px;
+            }
+
+            label {
+                font-size: 13px;
+                margin-bottom: 8px;
+            }
+
+            select {
+                padding: 14px;
+                font-size: 16px;
+            }
+
+            .btn-primary,
+            .btn-download {
+                padding: 15px 20px;
+                font-size: 16px;
+            }
+
+            .status {
+                padding: 14px;
+                font-size: 13px;
+            }
+        }
+
+        /* Disable hover effects on touch devices */
+        @media (hover: none) and (pointer: coarse) {
+            .btn-primary:hover:not(:disabled),
+            .btn-download:hover:not(:disabled) {
+                transform: none;
+            }
+        }
+
+        /* Focus visible for accessibility */
+        select:focus-visible,
+        button:focus-visible {
+            outline: 2px solid #2563eb;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🚚</div>
+            <h1>Kargo Internal</h1>
+            <p class="subtitle">Customer Data Export</p>
+        </div>
+
+        <form id="exportForm" onsubmit="event.preventDefault(); generateCSV();">
+            <div class="form-group">
+                <label for="city">City</label>
+                <select id="city" name="city" required>
+                    <option value="Patna" selected>Patna</option>
+                    <option value="">All Cities</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="salesRep">Sales Representative</label>
+                <select id="salesRep" name="salesRep" required>
+                    <option value="">All Representatives</option>
+                    <option value="Manas">Manas</option>
+                    <option value="Satyam">Satyam</option>
+                    <option value="Ankit">Ankit</option>
+                </select>
+            </div>
+
+            <button type="submit" class="btn-primary" id="generateBtn">
+                Generate CSV Export
+            </button>
+
+            <button type="button" class="btn-download" id="downloadBtn" onclick="downloadCSV()">
+                Download CSV
+            </button>
+
+            <div class="status" id="status"></div>
+        </form>
+    </div>
+
+    <script>
+        let currentFilename = null;
+        let downloadUrl = null;
+
+        async function generateCSV() {
+            const generateBtn = document.getElementById('generateBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const status = document.getElementById('status');
+            const citySelect = document.getElementById('city');
+            const salesRepSelect = document.getElementById('salesRep');
+            
+            const city = citySelect.value.trim();
+            const salesRep = salesRepSelect.value.trim();
+
+            // Reset UI
+            generateBtn.disabled = true;
+            generateBtn.innerHTML = '<span class="loading"></span>Generating CSV...';
+            downloadBtn.style.display = 'none';
+            status.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/generate-csv', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        city: city || null,
+                        sales_rep: salesRep || null
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    currentFilename = data.filename;
+                    downloadUrl = data.download_url;
+                    
+                    status.className = 'status success';
+                    status.innerHTML = `✅ Successfully generated CSV with <strong>${data.count}</strong> customer records!`;
+                    status.style.display = 'block';
+                    
+                    downloadBtn.style.display = 'block';
+                    downloadBtn.textContent = `📥 Download ${data.filename}`;
+                    
+                    // Scroll to download button
+                    downloadBtn.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                } else {
+                    status.className = 'status error';
+                    status.textContent = `❌ Error: ${data.error || 'Failed to generate CSV. Please try again.'}`;
+                    status.style.display = 'block';
+                }
+            } catch (error) {
+                status.className = 'status error';
+                status.textContent = `❌ Error: ${error.message || 'Network error. Please check your connection and try again.'}`;
+                status.style.display = 'block';
+            } finally {
+                generateBtn.disabled = false;
+                generateBtn.textContent = 'Generate CSV Export';
+            }
+        }
+
+        function downloadCSV() {
+            if (downloadUrl) {
+                window.location.href = downloadUrl;
+            }
+        }
+
+        // Handle form submission with Enter key
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('exportForm');
+            const selects = form.querySelectorAll('select');
+            
+            selects.forEach(select => {
+                select.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        generateCSV();
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

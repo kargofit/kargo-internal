@@ -1,0 +1,54 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Temporary files
+temp/*
+!temp/.gitkeep
+
+# CSV files
+*.csv
+
+# Jupyter
+*.ipynb
+.ipynb_checkpoints/
+
+# Other
+.git/
+.gitignore
+README*.md
+*.md
+clean_notes.py
+crawl.py
+firebase_crawl.py
+odoo_script.py
+odoo_customer_export.py
+service-account.json
+broadcast_results.json
+*.numbers
+

@@ -1,0 +1,36 @@
+{
+  "total": 2,
+  "success": 0,
+  "failed": 2,
+  "details": [
+    {
+      "phone": "++919821789147",
+      "status": "failed",
+      "error": {
+        "error": {
+          "message": "Unsupported post request. Object with ID '9288011221' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api",
+          "type": "GraphMethodException",
+          "code": 100,
+          "error_subcode": 33,
+          "fbtrace_id": "ACQgULKf-WzICQHK2XB1Qxu"
+        }
+      },
+      "timestamp": "2025-10-23T08:45:49.491108"
+    },
+    {
+      "phone": "++919818979508",
+      "status": "failed",
+      "error": {
+        "error": {
+          "message": "Unsupported post request. Object with ID '9288011221' does not exist, cannot be loaded due to missing permissions, or does not support this operation. Please read the Graph API documentation at https://developers.facebook.com/docs/graph-api",
+          "type": "GraphMethodException",
+          "code": 100,
+          "error_subcode": 33,
+          "fbtrace_id": "AXOJjZtbKI50rJifENai4cs"
+        }
+      },
+      "timestamp": "2025-10-23T08:45:57.091231"
+    }
+  ],
+  "timestamp": "2025-10-23T08:44:58.226716"
+}

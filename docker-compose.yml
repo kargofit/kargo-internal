@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    environment:
+      - ODOO_URL=${ODOO_URL:-https://kargo2.odoo.com}
+      - ODOO_DB=${ODOO_DB:-kargo2}
+      - ODOO_USERNAME=${ODOO_USERNAME:-admin@kargofit.com}
+      - ODOO_PASSWORD=${ODOO_PASSWORD:-af74742249c06aa4aee821b557c33f0d54267971}
+      - FLASK_HOST=0.0.0.0
+      - FLASK_PORT=5000
+      - FLASK_DEBUG=false
+    volumes:
+      - ./temp:/app/temp
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/test-connection"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
