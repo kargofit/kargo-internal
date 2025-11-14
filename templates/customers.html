@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes">
+    <meta name="theme-color" content="#2563eb">
+    <meta name="mobile-web-app-capable" content="yes">
+    <title>Kargo Internal - Customers</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #1e40af 0%, #3b82f6 50%, #60a5fa 100%);
+            min-height: 100vh;
+            padding: 20px;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .header h1 {
+            color: #1e293b;
+            font-size: 28px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-link {
+            color: #2563eb;
+            text-decoration: none;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .nav-link:hover {
+            background: #eff6ff;
+        }
+
+        .filters-section {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .filters-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 16px;
+            align-items: end;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 8px;
+            color: #334155;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        select {
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            background: white;
+            color: #1e293b;
+            transition: all 0.3s;
+            cursor: pointer;
+            -webkit-appearance: none;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23334155' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 40px;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb 0%, #3b82f6 100%);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.4);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .customers-section {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .section-header h2 {
+            color: #1e293b;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-secondary {
+            background: #f1f5f9;
+            color: #334155;
+            border: 2px solid #e2e8f0;
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: #e2e8f0;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-success:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.4);
+        }
+
+        .customers-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+
+        .customers-table th {
+            background: #f8fafc;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+            color: #475569;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .customers-table td {
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #1e293b;
+        }
+
+        .customers-table tr:hover {
+            background: #f8fafc;
+        }
+
+        .checkbox-cell {
+            width: 40px;
+            text-align: center;
+        }
+
+        .phone-cell {
+            font-family: monospace;
+            color: #2563eb;
+        }
+
+        .no-phone {
+            color: #94a3b8;
+            font-style: italic;
+        }
+
+        .status {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-top: 16px;
+            display: none;
+            animation: fadeIn 0.4s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .status.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 2px solid #6ee7b7;
+        }
+
+        .status.error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 2px solid #fca5a5;
+        }
+
+        .status.info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 2px solid #93c5fd;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s linear infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 600px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            color: #1e293b;
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 4px;
+        }
+
+        .close-btn:hover {
+            background: #f1f5f9;
+            color: #1e293b;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            min-height: 120px;
+            margin-bottom: 16px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .selected-count {
+            background: #eff6ff;
+            color: #1e40af;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #94a3b8;
+        }
+
+        .empty-state svg {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .filters-row {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .customers-table {
+                font-size: 14px;
+            }
+
+            .customers-table th,
+            .customers-table td {
+                padding: 8px;
+            }
+
+            .action-buttons {
+                width: 100%;
+            }
+
+            .btn {
+                flex: 1;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 22px;
+            }
+
+            .customers-table {
+                display: block;
+                overflow-x: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚚 Kargo Internal - Customers</h1>
+            <a href="/" class="nav-link">← Back to Export</a>
+        </div>
+
+        <div class="filters-section">
+            <div class="filters-row">
+                <div class="form-group">
+                    <label for="cityFilter">City</label>
+                    <select id="cityFilter">
+                        <option value="">All Cities</option>
+                        <option value="Patna" selected>Patna</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="salesRepFilter">Sales Representative</label>
+                    <select id="salesRepFilter">
+                        <option value="">All Representatives</option>
+                        <option value="Manas">Manas</option>
+                        <option value="Satyam">Satyam</option>
+                        <option value="Ankit">Ankit</option>
+                    </select>
+                </div>
+                <button class="btn btn-primary" onclick="loadCustomers()">Load Customers</button>
+            </div>
+        </div>
+
+        <div class="customers-section">
+            <div class="section-header">
+                <h2>Customers <span class="selected-count" id="customerCount">0</span></h2>
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="selectAll()">Select All</button>
+                    <button class="btn btn-secondary" onclick="deselectAll()">Deselect All</button>
+                    <button class="btn btn-success" onclick="openWhatsAppModal()" id="sendWhatsAppBtn" disabled>
+                        📱 Send WhatsApp
+                    </button>
+                </div>
+            </div>
+
+            <div id="status" class="status"></div>
+
+            <div id="customersTableContainer">
+                <div class="empty-state">
+                    <p>Click "Load Customers" to fetch customers from Odoo</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- WhatsApp Modal -->
+    <div id="whatsappModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Send WhatsApp Message</h3>
+                <button class="close-btn" onclick="closeWhatsAppModal()">&times;</button>
+            </div>
+            <div>
+                <p style="margin-bottom: 12px; color: #64748b;">
+                    Sending to <strong id="selectedCountText">0</strong> customers
+                </p>
+                <label for="whatsappMessage">Message:</label>
+                <textarea id="whatsappMessage" placeholder="Enter your message here..."></textarea>
+                <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                    <button class="btn btn-secondary" onclick="closeWhatsAppModal()">Cancel</button>
+                    <button class="btn btn-success" onclick="sendWhatsAppMessages()">
+                        Send Messages
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let customers = [];
+        let selectedCustomers = new Set();
+
+        async function loadCustomers() {
+            const city = document.getElementById('cityFilter').value;
+            const salesRep = document.getElementById('salesRepFilter').value;
+            const status = document.getElementById('status');
+            const container = document.getElementById('customersTableContainer');
+            const loadBtn = event.target;
+
+            loadBtn.disabled = true;
+            loadBtn.innerHTML = '<span class="loading"></span>Loading...';
+            status.style.display = 'none';
+            container.innerHTML = '<div class="empty-state"><p>Loading customers...</p></div>';
+
+            try {
+                const params = new URLSearchParams();
+                if (city) params.append('city', city);
+                if (salesRep) params.append('sales_rep', salesRep);
+
+                const response = await fetch(`/api/customers?${params.toString()}`);
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    customers = data.customers;
+                    selectedCustomers.clear();
+                    renderCustomersTable();
+                    updateCustomerCount();
+                    status.className = 'status success';
+                    status.textContent = `✅ Loaded ${data.count} customers`;
+                    status.style.display = 'block';
+                } else {
+                    status.className = 'status error';
+                    status.textContent = `❌ Error: ${data.error || 'Failed to load customers'}`;
+                    status.style.display = 'block';
+                    container.innerHTML = '<div class="empty-state"><p>Failed to load customers</p></div>';
+                }
+            } catch (error) {
+                status.className = 'status error';
+                status.textContent = `❌ Error: ${error.message}`;
+                status.style.display = 'block';
+                container.innerHTML = '<div class="empty-state"><p>Error loading customers</p></div>';
+            } finally {
+                loadBtn.disabled = false;
+                loadBtn.textContent = 'Load Customers';
+            }
+        }
+
+        function renderCustomersTable() {
+            const container = document.getElementById('customersTableContainer');
+            
+            if (customers.length === 0) {
+                container.innerHTML = '<div class="empty-state"><p>No customers found</p></div>';
+                return;
+            }
+
+            let html = `
+                <table class="customers-table">
+                    <thead>
+                        <tr>
+                            <th class="checkbox-cell">
+                                <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this.checked)">
+                            </th>
+                            <th>Name</th>
+                            <th>City</th>
+                            <th>Sales Rep</th>
+                            <th>Phone</th>
+                            <th>Sale Orders</th>
+                            <th>Total Amount</th>
+                            <th>Address</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            customers.forEach((customer, index) => {
+                const hasPhone = customer.has_phone;
+                const phone = customer.phone_number || 'No phone';
+                const isSelected = selectedCustomers.has(index);
+                
+                html += `
+                    <tr>
+                        <td class="checkbox-cell">
+                            <input type="checkbox" 
+                                   ${!hasPhone ? 'disabled' : ''} 
+                                   ${isSelected ? 'checked' : ''}
+                                   onchange="toggleCustomer(${index}, this.checked)">
+                        </td>
+                        <td>${escapeHtml(customer.name || '')}</td>
+                        <td>${escapeHtml(customer.city || '')}</td>
+                        <td>${escapeHtml(customer.x_studio_sales_rep || '')}</td>
+                        <td class="phone-cell ${!hasPhone ? 'no-phone' : ''}">
+                            ${hasPhone ? escapeHtml(phone) : 'No phone'}
+                        </td>
+                        <td>${Number(customer.sale_order_count || 0)}</td>
+                        <td>${(customer.sale_order_amount_total || 0).toFixed ? (customer.sale_order_amount_total || 0).toFixed(2) : Number(customer.sale_order_amount_total || 0).toFixed(2)}</td>
+                        <td>${escapeHtml(customer.street || '')}</td>
+                    </tr>
+                `;
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        function toggleCustomer(index, checked) {
+            if (checked) {
+                selectedCustomers.add(index);
+            } else {
+                selectedCustomers.delete(index);
+            }
+            updateCustomerCount();
+            updateSelectAllCheckbox();
+        }
+
+        function selectAll() {
+            customers.forEach((customer, index) => {
+                if (customer.has_phone) {
+                    selectedCustomers.add(index);
+                }
+            });
+            renderCustomersTable();
+            updateCustomerCount();
+        }
+
+        function deselectAll() {
+            selectedCustomers.clear();
+            renderCustomersTable();
+            updateCustomerCount();
+        }
+
+        function toggleSelectAll(checked) {
+            if (checked) {
+                selectAll();
+            } else {
+                deselectAll();
+            }
+        }
+
+        function updateSelectAllCheckbox() {
+            const checkbox = document.getElementById('selectAllCheckbox');
+            if (checkbox) {
+                const selectableCount = customers.filter(c => c.has_phone).length;
+                checkbox.checked = selectedCustomers.size === selectableCount && selectableCount > 0;
+                checkbox.indeterminate = selectedCustomers.size > 0 && selectedCustomers.size < selectableCount;
+            }
+        }
+
+        function updateCustomerCount() {
+            const count = selectedCustomers.size;
+            document.getElementById('customerCount').textContent = count;
+            document.getElementById('sendWhatsAppBtn').disabled = count === 0;
+        }
+
+        function openWhatsAppModal() {
+            const count = selectedCustomers.size;
+            if (count === 0) return;
+            
+            document.getElementById('selectedCountText').textContent = count;
+            document.getElementById('whatsappMessage').value = '';
+            document.getElementById('whatsappModal').style.display = 'flex';
+        }
+
+        function closeWhatsAppModal() {
+            document.getElementById('whatsappModal').style.display = 'none';
+        }
+
+        async function sendWhatsAppMessages() {
+            const message = document.getElementById('whatsappMessage').value.trim();
+            
+            if (!message) {
+                alert('Please enter a message');
+                return;
+            }
+
+            const phoneNumbers = Array.from(selectedCustomers).map(index => {
+                return customers[index].phone_number;
+            }).filter(phone => phone && phone.length >= 10);
+
+            if (phoneNumbers.length === 0) {
+                alert('No valid phone numbers selected');
+                return;
+            }
+
+            const sendBtn = event.target;
+            sendBtn.disabled = true;
+            sendBtn.innerHTML = '<span class="loading"></span>Sending...';
+
+            const status = document.getElementById('status');
+            status.className = 'status info';
+            status.textContent = `📤 Sending messages to ${phoneNumbers.length} customers...`;
+            status.style.display = 'block';
+
+            try {
+                const response = await fetch('/api/send-whatsapp', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        phone_numbers: phoneNumbers,
+                        message: message
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    const results = data.results;
+                    status.className = 'status success';
+                    status.innerHTML = `
+                        ✅ Messages sent!<br>
+                        Successfully sent: ${results.sent}<br>
+                        Failed: ${results.failed}<br>
+                        Total: ${results.total}
+                    `;
+                    status.style.display = 'block';
+                    closeWhatsAppModal();
+                } else {
+                    status.className = 'status error';
+                    status.textContent = `❌ Error: ${data.error || 'Failed to send messages'}`;
+                    status.style.display = 'block';
+                }
+            } catch (error) {
+                status.className = 'status error';
+                status.textContent = `❌ Error: ${error.message}`;
+                status.style.display = 'block';
+            } finally {
+                sendBtn.disabled = false;
+                sendBtn.textContent = 'Send Messages';
+            }
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // Close modal on outside click
+        document.getElementById('whatsappModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeWhatsAppModal();
+            }
+        });
+    </script>
+</body>
+</html>

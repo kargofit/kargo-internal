@@ -7,6 +7,7 @@ from html import unescape
 from flask import Flask, render_template, send_file, jsonify, request
 from datetime import datetime
 import os
+from whatsapp_service import WhatsAppService
 
 app = Flask(__name__)
 
@@ -88,9 +89,12 @@ def fetch_customers(uid, models, city=None, sales_rep=None, limit=1000):
         
         # Define fields to fetch
         fields = [
+            'id',            
             'name',          # Customer name
             'street',        # Street address
             'phone',         # Phone number
+            'city',          # City
+            'x_studio_follow_up_date',
             'x_studio_sales_rep',  # Custom field: Sales representative
             'comment'        # Notes/Internal notes
         ]
@@ -109,6 +113,8 @@ def fetch_customers(uid, models, city=None, sales_rep=None, limit=1000):
                 customer['comment'] = clean_html(customer['comment'])
             # Handle tuple fields (like Many2one fields - format: (id, name))
             for key in customer:
+                if key == 'id':
+                    continue
                 if isinstance(customer[key], tuple):
                     # Many2one fields are tuples: (id, display_name)
                     customer[key] = customer[key][1] if len(customer[key]) > 1 else str(customer[key][0])
@@ -125,6 +131,50 @@ def fetch_customers(uid, models, city=None, sales_rep=None, limit=1000):
         print(f"Error fetching customers: {e}")
         return []
 
+def fetch_sales_stats(uid, models, partner_ids, states=None):
+    try:
+        if not partner_ids:
+            return {}
+        states = states or ['sale', 'done']
+        domain = [('partner_id', 'in', partner_ids)]
+        if states:
+            domain.append(('state', 'in', states))
+        groups = models.execute_kw(
+            ODOO_DB, uid, ODOO_PASSWORD,
+            'sale.order', 'read_group',
+            [domain],
+            {
+                'fields': ['amount_total:sum'],
+                'groupby': ['partner_id'],
+                'lazy': False
+            }
+        )
+        stats = {}
+        for g in groups:
+            pid = None
+            v = g.get('partner_id')
+            if isinstance(v, (list, tuple)) and v:
+                pid = v[0]
+            elif isinstance(v, int):
+                pid = v
+            elif isinstance(v, str) and v.isdigit():
+                pid = int(v)
+            cnt = g.get('__count')
+            if cnt is None:
+                cnt = g.get('partner_id_count', 0)
+            amt = g.get('amount_total')
+            if amt is None:
+                amt = g.get('amount_total_sum', 0.0)
+            if pid is not None:
+                stats[pid] = {
+                    'sale_order_count': int(cnt or 0),
+                    'sale_order_amount_total': float(amt or 0.0)
+                }
+        return stats
+    except Exception as e:
+        print(f"Error fetching sales stats: {e}")
+        return {}
+
 def generate_csv(customers):
     """Generate CSV content from customer data"""
     if not customers:
@@ -138,8 +188,11 @@ def generate_csv(customers):
             'name',          # Customer name
             'street',        # Street address
             'phone',         # Phone number
+            'x_studio_follow_up_date',
             'x_studio_sales_rep',  # Custom field: Sales representative
-            'comment'        # Notes/Internal notes
+            'comment',        # Notes/Internal notes
+            'sale_order_count',
+            'sale_order_amount_total'
         ]
         
     # Create CSV writer
@@ -169,6 +222,11 @@ def index():
     """Render the main page"""
     return render_template('index.html')
 
+@app.route('/customers')
+def customers():
+    """Render the customers list page"""
+    return render_template('customers.html')
+
 @app.route('/api/generate-csv', methods=['POST'])
 def generate_csv_endpoint():
     """Generate CSV from Odoo data"""
@@ -190,6 +248,14 @@ def generate_csv_endpoint():
         
         # Fetch customers
         customers = fetch_customers(uid, models, city=city, sales_rep=sales_rep)
+
+        partner_ids = [c.get('id') for c in customers if isinstance(c.get('id'), int)]
+        stats = fetch_sales_stats(uid, models, partner_ids)
+        for c in customers:
+            sid = c.get('id') if isinstance(c.get('id'), int) else None
+            s = stats.get(sid, {})
+            c['sale_order_count'] = s.get('sale_order_count', 0)
+            c['sale_order_amount_total'] = s.get('sale_order_amount_total', 0.0)
         
         if not customers:
             filter_msg = []
@@ -252,6 +318,93 @@ def download_file(filename):
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@app.route('/api/customers', methods=['GET'])
+def get_customers():
+    """Get customers from Odoo with filters"""
+    try:
+        # Get filters from query parameters
+        city = request.args.get('city', '').strip() or None
+        sales_rep = request.args.get('sales_rep', '').strip() or None
+        limit = int(request.args.get('limit', 1000))
+        
+        # Connect to Odoo
+        uid, models = connect_odoo()
+        
+        if not uid or not models:
+            return jsonify({'error': 'Failed to connect to Odoo. Please check credentials.'}), 500
+        
+        # Fetch customers
+        customers = fetch_customers(uid, models, city=city, sales_rep=sales_rep, limit=limit)
+        partner_ids = [c.get('id') for c in customers if isinstance(c.get('id'), int)]
+        stats = fetch_sales_stats(uid, models, partner_ids)
+        for c in customers:
+            sid = c.get('id') if isinstance(c.get('id'), int) else None
+            s = stats.get(sid, {})
+            c['sale_order_count'] = s.get('sale_order_count', 0)
+            c['sale_order_amount_total'] = s.get('sale_order_amount_total', 0.0)
+        
+        # Prepare phone numbers for each customer
+        for customer in customers:
+            # Use phone field only (mobile field is ignored)
+            phone = customer.get('phone') or ''
+            # Clean phone number - remove spaces, dashes, parentheses, plus signs
+            phone = phone.replace(' ', '').replace('-', '').replace('(', '').replace(')', '').replace('+', '')
+            
+            # Handle Indian phone numbers
+            if phone:
+                # If starts with 0, remove it
+                if phone.startswith('0'):
+                    phone = phone[1:]
+                # If 10 digits and doesn't start with country code, add 91 (India)
+                if len(phone) == 10 and not phone.startswith('91'):
+                    phone = '91' + phone
+                # If starts with 91 and has 12 digits, it's valid
+                # If has 10+ digits, it's potentially valid
+            
+            customer['phone_number'] = phone
+            customer['has_phone'] = bool(phone and len(phone) >= 10)
+        
+        return jsonify({
+            'success': True,
+            'customers': customers,
+            'count': len(customers),
+            'filters': {
+                'city': city,
+                'sales_rep': sales_rep
+            }
+        })
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/send-whatsapp', methods=['POST'])
+def send_whatsapp():
+    """Send WhatsApp messages to selected customers"""
+    try:
+        data = request.get_json() or {}
+        phone_numbers = data.get('phone_numbers', [])
+        message = data.get('message', '')
+        
+        if not phone_numbers:
+            return jsonify({'error': 'No phone numbers provided'}), 400
+        
+        if not message:
+            return jsonify({'error': 'Message is required'}), 400
+        
+        # Initialize WhatsApp service
+        whatsapp = WhatsAppService()
+        
+        # Send bulk messages
+        results = whatsapp.send_bulk_messages(phone_numbers, message)
+        
+        return jsonify({
+            'success': True,
+            'results': results
+        })
+    
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/test-connection', methods=['GET'])
 def test_connection():
     """Test Odoo connection"""
@@ -270,4 +423,3 @@ if __name__ == '__main__':
     # Create temp directory if it doesn't exist
     os.makedirs('temp', exist_ok=True)
     app.run(debug=FLASK_DEBUG, host=FLASK_HOST, port=FLASK_PORT)
-

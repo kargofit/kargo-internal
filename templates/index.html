@@ -311,8 +311,16 @@
     <div class="container">
         <div class="header">
             <div class="logo">🚚</div>
-            <h1>Kargo Internal</h1>
-            <p class="subtitle">Customer Data Export</p>
+            <div>
+                <h1>Kargo Internal</h1>
+                <p class="subtitle">Customer Data Export</p>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 24px;">
+            <a href="/customers" style="color: #2563eb; text-decoration: none; font-weight: 500; padding: 8px 16px; border-radius: 8px; transition: background 0.2s; display: inline-block;">
+                📱 View Customers & Send WhatsApp →
+            </a>
         </div>
 
         <form id="exportForm" onsubmit="event.preventDefault(); generateCSV();">

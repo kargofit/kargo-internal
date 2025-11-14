@@ -13,6 +13,9 @@ services:
       - FLASK_HOST=0.0.0.0
       - FLASK_PORT=5000
       - FLASK_DEBUG=false
+      - WHATSAPP_PHONE_NUMBER_ID=${WHATSAPP_PHONE_NUMBER_ID:-}
+      - WHATSAPP_ACCESS_TOKEN=${WHATSAPP_ACCESS_TOKEN:-}
+      - WHATSAPP_API_VERSION=${WHATSAPP_API_VERSION:-v21.0}
     volumes:
       - ./temp:/app/temp
     restart: unless-stopped
