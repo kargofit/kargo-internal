@@ -6,8 +6,8 @@ services:
     ports:
       - "5000:5000"
     environment:
-      - ODOO_URL=${ODOO_URL:-https://kargo2.odoo.com}
-      - ODOO_DB=${ODOO_DB:-kargo2}
+      - ODOO_URL=${ODOO_URL:-https://kargo3.odoo.com}
+      - ODOO_DB=${ODOO_DB:-kargo3}
       - ODOO_USERNAME=${ODOO_USERNAME:-admin@kargofit.com}
       - ODOO_PASSWORD=${ODOO_PASSWORD:-af74742249c06aa4aee821b557c33f0d54267971}
       - FLASK_HOST=0.0.0.0

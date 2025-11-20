@@ -12,8 +12,8 @@ from whatsapp_service import WhatsAppService
 app = Flask(__name__)
 
 # Odoo connection details (can be overridden by environment variables)
-ODOO_URL = os.getenv('ODOO_URL', 'https://kargo2.odoo.com')
-ODOO_DB = os.getenv('ODOO_DB', 'kargo2')
+ODOO_URL = os.getenv('ODOO_URL', 'https://kargo3.odoo.com')
+ODOO_DB = os.getenv('ODOO_DB', 'kargo3')
 ODOO_USERNAME = os.getenv('ODOO_USERNAME', 'admin@kargofit.com')
 ODOO_PASSWORD = os.getenv('ODOO_PASSWORD', 'af74742249c06aa4aee821b557c33f0d54267971')
 

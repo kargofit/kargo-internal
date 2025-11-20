@@ -103,8 +103,8 @@ docker run -d \
   --name kargo-internal \
   -p 5000:5000 \
   -v $(pwd)/temp:/app/temp \
-  -e ODOO_URL=https://kargo2.odoo.com \
-  -e ODOO_DB=kargo2 \
+  -e ODOO_URL=https://kargo3.odoo.com \
+  -e ODOO_DB=kargo3 \
   -e ODOO_USERNAME=admin@kargofit.com \
   -e ODOO_PASSWORD=your_password \
   kargo-internal
@@ -154,8 +154,8 @@ You can customize the application using environment variables:
 docker run -d \
   --name kargo-internal \
   -p 5000:5000 \
-  -e ODOO_URL=https://kargo2.odoo.com \
-  -e ODOO_DB=kargo2 \
+  -e ODOO_URL=https://kargo3.odoo.com \
+  -e ODOO_DB=kargo3 \
   -e ODOO_USERNAME=admin@kargofit.com \
   -e ODOO_PASSWORD=your_password \
   -e FLASK_HOST=0.0.0.0 \
@@ -170,8 +170,8 @@ Edit the `docker-compose.yml` file:
 
 ```yaml
 environment:
-  - ODOO_URL=https://kargo2.odoo.com
-  - ODOO_DB=kargo2
+  - ODOO_URL=https://kargo3.odoo.com
+  - ODOO_DB=kargo3
   - ODOO_USERNAME=admin@kargofit.com
   - ODOO_PASSWORD=your_password
   - FLASK_HOST=0.0.0.0
@@ -183,8 +183,8 @@ Or use a `.env` file:
 
 1. Create a `.env` file in the project directory:
 ```env
-ODOO_URL=https://kargo2.odoo.com
-ODOO_DB=kargo2
+ODOO_URL=https://kargo3.odoo.com
+ODOO_DB=kargo3
 ODOO_USERNAME=admin@kargofit.com
 ODOO_PASSWORD=your_password
 FLASK_HOST=0.0.0.0

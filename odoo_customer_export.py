@@ -4,8 +4,8 @@ import re
 from html import unescape
 
 # Odoo connection details
-ODOO_URL = URL = "https://kargo2.odoo.com"  # e.g., https://kargofit.odoo.com
-ODOO_DB = DB = "kargo2"  # e.g., kargofit
+ODOO_URL = URL = "https://kargo3.odoo.com"  # e.g., https://kargofit.odoo.com
+ODOO_DB = DB = "kargo3"  # e.g., kargofit
 ODOO_USERNAME = USERNAME = "admin@kargofit.com"
 ODOO_PASSWORD = PASSWORD = "af74742249c06aa4aee821b557c33f0d54267971"
 # City filter (change as needed)

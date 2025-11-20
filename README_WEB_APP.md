@@ -46,8 +46,8 @@ http://localhost:5000
 Edit the following variables in `app.py` to match your Odoo instance:
 
 ```python
-ODOO_URL = "https://kargo2.odoo.com"
-ODOO_DB = "kargo2"
+ODOO_URL = "https://kargo3.odoo.com"
+ODOO_DB = "kargo3"
 ODOO_USERNAME = "admin@kargofit.com"
 ODOO_PASSWORD = "af74742249c06aa4aee821b557c33f0d54267971"
 ```

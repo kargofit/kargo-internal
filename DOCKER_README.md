@@ -37,8 +37,8 @@ This guide explains how to run the Odoo CSV Generator web application using Dock
    ```bash
    docker run -d \
      -p 5000:5000 \
-     -e ODOO_URL=https://kargo2.odoo.com \
-     -e ODOO_DB=kargo2 \
+     -e ODOO_URL=https://kargo3.odoo.com \
+     -e ODOO_DB=kargo3 \
      -e ODOO_USERNAME=admin@kargofit.com \
      -e ODOO_PASSWORD=your_password \
      --name odoo-csv-generator \
@@ -59,8 +59,8 @@ This guide explains how to run the Odoo CSV Generator web application using Dock
 
 You can customize the application using environment variables:
 
-- `ODOO_URL`: Odoo server URL (default: `https://kargo2.odoo.com`)
-- `ODOO_DB`: Database name (default: `kargo2`)
+- `ODOO_URL`: Odoo server URL (default: `https://kargo3.odoo.com`)
+- `ODOO_DB`: Database name (default: `kargo3`)
 - `ODOO_USERNAME`: Odoo username (default: `admin@kargofit.com`)
 - `ODOO_PASSWORD`: Odoo password/API key
 - `FLASK_HOST`: Host to bind to (default: `0.0.0.0`)
